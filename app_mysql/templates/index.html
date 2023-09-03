@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        form {
+            text-align: center;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 50%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            width: 70%;
+        }
+
+        button[type="submit"] {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+
+<head>
+    <title>Consulta de Datos</title>
+</head>
+<body>
+    <h1>Consulta de Datos desde MySQL</h1>
+    
+    <form id="search-form">
+        <label for="dni">Introduce el DNI del estudiante:</label>
+        <input type="text" id="dni" name="dni" required>
+        <button type="submit">Buscar</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>DNI</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Telefono</th>
+        </tr>
+        <tbody id="data">
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchData(dni) {
+            const response = await fetch(`/api/data?dni=${dni}`);
+
+            const data = await response.json();
+            console.log(data);
+    
+            const dataContainer = document.getElementById('data');
+            dataContainer.innerHTML = '';
+    
+            data.forEach(row => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                <td>${row.dni}</td>
+                <td>${row.nombre}</td>
+                <td>${row.apellido}</td>
+                <td>${row.telefono}</td>
+                `;
+
+                dataContainer.appendChild(newRow);
+            });
+        }
+    
+        const searchForm = document.getElementById('search-form');
+        searchForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const dniInput = document.getElementById('dni');
+            const dni = dniInput.value;
+            await fetchData(dni);
+        });
+    </script>
+
+</body>
+</html>
